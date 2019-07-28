@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 26, 2019 at 06:30 PM
+-- Generation Time: Jul 26, 2019 at 07:05 PM
 -- Server version: 5.6.13
 -- PHP Version: 5.4.17
 
@@ -21,6 +21,31 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `tinder` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `tinder`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `etiquetascomida`
+--
+
+CREATE TABLE IF NOT EXISTS `etiquetascomida` (
+  `etiqueta_id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(64) NOT NULL,
+  PRIMARY KEY (`etiqueta_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `etiquetasusuario`
+--
+
+CREATE TABLE IF NOT EXISTS `etiquetasusuario` (
+  `Tinder_Account_user_ID` int(11) NOT NULL,
+  `Etiquetascomida_etiqueta_ID` int(11) NOT NULL,
+  PRIMARY KEY (`Tinder_Account_user_ID`,`Etiquetascomida_etiqueta_ID`),
+  KEY `Etiquetascomida_etiqueta_ID` (`Etiquetascomida_etiqueta_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -118,11 +143,18 @@ CREATE TABLE IF NOT EXISTS `unmatch` (
 --
 
 --
+-- Constraints for table `etiquetasusuario`
+--
+ALTER TABLE `etiquetasusuario`
+  ADD CONSTRAINT `etiquetasusuario_ibfk_2` FOREIGN KEY (`Etiquetascomida_etiqueta_ID`) REFERENCES `etiquetascomida` (`etiqueta_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `etiquetasusuario_ibfk_1` FOREIGN KEY (`Tinder_Account_user_ID`) REFERENCES `tinderaccount` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `like`
 --
 ALTER TABLE `like`
-  ADD CONSTRAINT `like_ibfk_2` FOREIGN KEY (`Match_match_id`) REFERENCES `match` (`match_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `like_ibfk_1` FOREIGN KEY (`Tinder_Account_user_id`) REFERENCES `tinderaccount` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `like_ibfk_1` FOREIGN KEY (`Tinder_Account_user_id`) REFERENCES `tinderaccount` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `like_ibfk_2` FOREIGN KEY (`Match_match_id`) REFERENCES `match` (`match_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `match`
@@ -134,8 +166,8 @@ ALTER TABLE `match`
 -- Constraints for table `message`
 --
 ALTER TABLE `message`
-  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`ReportUser_user_id`) REFERENCES `reportuser` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`match_id`) REFERENCES `match` (`match_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `message_ibfk_1` FOREIGN KEY (`match_id`) REFERENCES `match` (`match_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `message_ibfk_2` FOREIGN KEY (`ReportUser_user_id`) REFERENCES `reportuser` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
